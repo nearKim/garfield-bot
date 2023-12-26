@@ -7,16 +7,12 @@ pub struct WeatherService {
 }
 
 impl WeatherService {
-    pub fn new(repository: AccuWeatherRepository) -> Self {
-        Self { repository }
-    }
-
     pub async fn get_today_weather_data(&self) -> WeatherData {
-        self.repository.get().await.expect("Failed to get WeatherData")
+        self.repository.get().await
     }
 
     pub async fn get_today_particulate_data(&self) -> ParticulateData {
-        self.repository.get_particulate().await.expect("Failed to get ParticulateData")
+        self.repository.get_particulate().await
     }
 
     pub fn create_weather_msg(&self, data: &WeatherData) -> String {
