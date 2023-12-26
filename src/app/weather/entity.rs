@@ -18,3 +18,9 @@ impl WeatherData {
         }
     }
 }
+
+#[derive(Deserialize, Debug)]
+pub struct ParticulateData {
+    pub pm10: f32,
+    pub pm25: f32,
+}
