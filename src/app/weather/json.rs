@@ -3,27 +3,27 @@ use serde::Deserialize;
 use crate::app::weather::entity::{ParticulateData, WeatherData};
 
 #[derive(Deserialize, Debug)]
-struct TempData {
+pub struct TempData {
     Value: f32,
     Unit: String,
     UnitType: u8,
 }
 
 #[derive(Deserialize, Debug)]
-struct Temperature {
+pub struct Temperature {
     Minimum: TempData,
     Maximum: TempData,
 }
 
 #[derive(Deserialize, Debug)]
-struct General {
+pub struct General {
     Icon: u8,
     IconPhrase: String,
     HasPrecipitation: bool,
 }
 
 #[derive(Deserialize, Debug)]
-struct DailyForecast {
+pub struct DailyForecast {
     Date: String,
     EpochDate: u32,
     Temperature: Temperature,
@@ -35,7 +35,7 @@ struct DailyForecast {
 }
 
 #[derive(Deserialize, Debug)]
-struct Headline {
+pub struct Headline {
     EffectiveDate: String,
     EffectiveEpochDate: u32,
     Severity: u8,
