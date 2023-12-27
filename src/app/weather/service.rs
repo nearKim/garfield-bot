@@ -16,7 +16,7 @@ impl WeatherService {
     }
 
     pub fn create_weather_msg(&self, data: &WeatherData) -> String {
-        format!("[{} 날씨]\n* 최고기온: {}°C\n* 최저기온: {}°C\n* 눈 또는 비: {}\n",
+        format!("[{}]\n* 최고/최저: {} / {}\n* 눈비: {}\n",
                 data.date_time,
                 data.max_temp,
                 data.min_temp,
@@ -37,6 +37,6 @@ impl WeatherService {
             x if x <= 75.0 => "나쁨",
             _ => "매우나쁨"
         };
-        format!("* 미세먼지: {}㎍/㎥ ({})\n* 초미세먼지: {}㎍/㎥ ({}) \n", data.pm10, pm10_criteria, data.pm25, pm25_criteria, )
+        format!("* 미세/초미세: {} / {}\n", pm10_criteria, pm25_criteria)
     }
 }

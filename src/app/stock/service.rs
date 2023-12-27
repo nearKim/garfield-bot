@@ -13,13 +13,14 @@ impl StockService {
     }
 
     pub fn create_stock_msg(&self, stock_data_vec: Vec<StockData>) -> String {
-        let mut result = String::from_str("[주식 정보]\n").expect("Fail");
+        let mut result = String::from_str("").expect("Fail");
 
         for data in stock_data_vec {
             result.push_str(format!("<종목: {}>\n", data.ticker).as_str());
             result.push_str(format!("종가: {}\n", data.close).as_str());
             result.push_str(format!("상한가: {}\n", data.high).as_str());
             result.push_str(format!("하한가: {}\n", data.low).as_str());
+            result.push_str("\n");
         }
         result
     }
