@@ -36,7 +36,7 @@ impl WeatherService {
             _ => "매우나쁨",
         };
         format!(
-            " :right_red:  미세먼지: {}㎍/㎥ ({})\n :right_red: 초미세먼지: {}㎍/㎥ ({}) \n",
+            " :right_red: 미세먼지: {}㎍/㎥ ({})\n :right_red: 초미세먼지: {}㎍/㎥ ({}) \n",
             data.pm10, pm10_criteria, data.pm25, pm25_criteria,
         )
     }

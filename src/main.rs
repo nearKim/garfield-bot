@@ -1,12 +1,16 @@
-use reqwest::Error;
+use std::fs::File;
+use std::io::Read;
 use serde::Serialize;
 use crate::app::stock::repository::StockRepository;
 use crate::app::stock::service::StockService;
 use crate::app::weather::repository::AccuWeatherRepository;
 use crate::app::weather::service::WeatherService;
 use tokio::join;
+use json::Text;
+use crate::json::SlackHook;
 
 mod app;
+mod json;
 
 async fn weather_msg() -> String {
     let repository = AccuWeatherRepository {};
@@ -28,35 +32,41 @@ async fn stock_msg() -> String {
 }
 
 
-#[derive(Serialize, Debug)]
-struct Text {
-    text: String
-}
-
-
 async fn send_message_to_slack(webhook_url: &str, message: &str) -> Result<(), String> {
     let payload = Text { text : message.to_string() };
     let client = reqwest::Client::new();
     let response = client.post(webhook_url)
         .json(&payload)
         .send()
-        .await.expect("shit!");
+        .await
+        .unwrap();
 
-    // Check if the request was successful (HTTP status code 200 OK)
     if response.status().is_success() {
         println!("Message sent successfully!");
         Ok(())
     } else {
         println!("Failed to send message. Status code: {}", response.status());
-        Err("fuck!".to_string())
+        Err("Failed to send message".to_string())
 
     }
 }
 
+
+fn read_json_bytes(json_bytes: &[u8]) -> SlackHook {
+    let json_str = std::str::from_utf8(json_bytes).unwrap();
+    let json_data: SlackHook = serde_json::from_str(json_str).unwrap();
+    json_data
+}
+
+
 #[tokio::main]
 async fn main() -> Result<(), String> {
     let result = join!(weather_msg(), stock_msg());
-    let msg = result.0 + &result.1;
+    let msg1 = &result.0;
+    let msg2 = result.0 + &result.1;
+    let json_bytes = include_bytes!("secret.json");
+    let slack_hook = read_json_bytes(json_bytes);
 
-    send_message_to_slack("", &msg).await
+    send_message_to_slack(&slack_hook.ml_chat, &msg1).await;
+    send_message_to_slack(&slack_hook.garfield_random, &msg2).await
 }
