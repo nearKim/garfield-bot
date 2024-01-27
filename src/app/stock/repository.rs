@@ -1,6 +1,6 @@
-use reqwest::{Error, get};
 use crate::app::stock::entity::StockData;
 use crate::app::stock::json::StockResult;
+use reqwest::{get, Error};
 
 pub struct StockRepository;
 impl StockRepository {

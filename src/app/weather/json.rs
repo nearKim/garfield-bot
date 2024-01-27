@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-use serde::Deserialize;
 use crate::app::weather::entity::{ParticulateData, WeatherData};
+use serde::Deserialize;
+use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 pub struct TempData {
@@ -57,14 +57,15 @@ impl WeatherResult {
     pub fn to_domain(&self) -> WeatherData {
         let forecast = self.DailyForecasts.first().unwrap();
         WeatherData {
-            min_temp : forecast.Temperature.Minimum.Value,
-            max_temp : forecast.Temperature.Maximum.Value,
-            date_time : forecast.Date
-                            .split('T')
-                            .next()
-                            .unwrap_or("[이상한 데이터]")
-                            .to_string(),
-            has_precipitation:  forecast.Day.HasPrecipitation || forecast.Night.HasPrecipitation
+            min_temp: forecast.Temperature.Minimum.Value,
+            max_temp: forecast.Temperature.Maximum.Value,
+            date_time: forecast
+                .Date
+                .split('T')
+                .next()
+                .unwrap_or("[이상한 데이터]")
+                .to_string(),
+            has_precipitation: forecast.Day.HasPrecipitation || forecast.Night.HasPrecipitation,
         }
     }
 }
@@ -82,28 +83,27 @@ pub struct ParticulateInfo {
     SO2: f32,
     IDEX_NM: String,
     IDEX_MVL: f32,
-    ARPLT_MAIN: String
+    ARPLT_MAIN: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ApiResult {
     list_total_count: u8,
     RESULT: HashMap<String, String>,
-    row: Vec<ParticulateInfo>
-
+    row: Vec<ParticulateInfo>,
 }
 #[derive(Deserialize, Debug)]
 pub struct ParticulateResult {
-    RealtimeCityAir: ApiResult
+    RealtimeCityAir: ApiResult,
 }
 
 impl ParticulateResult {
     pub fn to_domain(&self) -> ParticulateData {
-        let data =self.RealtimeCityAir.row.first().unwrap();
+        let data = self.RealtimeCityAir.row.first().unwrap();
 
         ParticulateData {
             pm10: data.PM10,
-            pm25: data.PM25
+            pm25: data.PM25,
         }
     }
 }

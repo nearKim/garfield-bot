@@ -1,12 +1,12 @@
-use std::env;
-use aws_config::{BehaviorVersion, Region};
-use aws_config::meta::region::RegionProviderChain;
-use aws_sdk_sns::{Client, Error};
-use tokio::join;
 use crate::app::stock::repository::StockRepository;
 use crate::app::stock::service::StockService;
 use crate::app::weather::repository::AccuWeatherRepository;
 use crate::app::weather::service::WeatherService;
+use aws_config::meta::region::RegionProviderChain;
+use aws_config::{BehaviorVersion, Region};
+use aws_sdk_sns::{Client, Error};
+use std::env;
+use tokio::join;
 
 mod app;
 
@@ -25,9 +25,8 @@ async fn stock_msg() -> String {
     let data = s_service.get_yesterday_stock_data().await;
     match data {
         Ok(p) => s_service.create_stock_msg(vec![p.0, p.1]),
-        Err(s) => "어제 장 데이터를 가져오지 못하였습니다.".to_string()
+        Err(s) => "어제 장 데이터를 가져오지 못하였습니다.".to_string(),
     }
-
 }
 async fn subscribe_and_publish(
     client: &Client,
@@ -60,7 +59,6 @@ async fn subscribe_and_publish(
 }
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-
     let config = aws_config::defaults(BehaviorVersion::latest())
         .region(Region::from_static("ap-northeast-1"))
         .load()
@@ -75,6 +73,7 @@ async fn main() -> Result<(), Error> {
         &client,
         "arn:aws:sns:ap-northeast-1:764123066160:garfield-bot-topic",
         "+821071550868",
-        msg
-    ).await
+        msg,
+    )
+    .await
 }

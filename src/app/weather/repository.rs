@@ -1,6 +1,6 @@
-use reqwest::{get, Error};
 use crate::app::weather::entity::{ParticulateData, WeatherData};
 use crate::app::weather::json::{ParticulateResult, WeatherResult};
+use reqwest::{get, Error};
 
 pub struct AccuWeatherRepository;
 impl AccuWeatherRepository {

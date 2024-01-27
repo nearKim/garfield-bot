@@ -8,7 +8,6 @@ pub struct WeatherData {
     pub has_precipitation: bool,
 }
 
-
 #[derive(Deserialize, Debug)]
 pub struct ParticulateData {
     pub pm10: f32,

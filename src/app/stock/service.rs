@@ -1,14 +1,14 @@
-use std::str::FromStr;
-use tokio::try_join;
 use crate::app::stock::entity::StockData;
 use crate::app::stock::repository::StockRepository;
+use std::str::FromStr;
+use tokio::try_join;
 
 pub struct StockService {
-    pub repository: StockRepository
+    pub repository: StockRepository,
 }
 
 impl StockService {
-    pub async fn get_yesterday_stock_data(&self) ->  Result<(StockData, StockData), String> {
+    pub async fn get_yesterday_stock_data(&self) -> Result<(StockData, StockData), String> {
         try_join!(self.repository.get("AAPL"), self.repository.get("TSLA"))
     }
 

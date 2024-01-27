@@ -7,4 +7,3 @@ pub struct StockData {
     pub high: f32,
     pub low: f32,
 }
-
