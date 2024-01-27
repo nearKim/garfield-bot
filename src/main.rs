@@ -1,11 +1,9 @@
+use reqwest::Error;
+use serde::Serialize;
 use crate::app::stock::repository::StockRepository;
 use crate::app::stock::service::StockService;
 use crate::app::weather::repository::AccuWeatherRepository;
 use crate::app::weather::service::WeatherService;
-use aws_config::meta::region::RegionProviderChain;
-use aws_config::{BehaviorVersion, Region};
-use aws_sdk_sns::{Client, Error};
-use std::env;
 use tokio::join;
 
 mod app;
@@ -28,52 +26,37 @@ async fn stock_msg() -> String {
         Err(s) => s,
     }
 }
-async fn subscribe_and_publish(
-    client: &Client,
-    topic_arn: &str,
-    phone: &str,
-    msg: String,
-) -> Result<(), Error> {
-    println!("Receiving on topic with ARN: `{}`", topic_arn);
 
-    let rsp = client
-        .subscribe()
-        .topic_arn(topic_arn)
-        .protocol("sms")
-        .endpoint(phone)
-        .send()
-        .await?;
 
-    println!("Added a subscription: {:?}", rsp);
-
-    let rsp = client
-        .publish()
-        .topic_arn(topic_arn)
-        .message(msg)
-        .send()
-        .await?;
-
-    println!("Published message: {:?}", rsp);
-
-    Ok(())
+#[derive(Serialize, Debug)]
+struct Text {
+    text: String
 }
+
+
+async fn send_message_to_slack(webhook_url: &str, message: &str) -> Result<(), String> {
+    let payload = Text { text : message.to_string() };
+    let client = reqwest::Client::new();
+    let response = client.post(webhook_url)
+        .json(&payload)
+        .send()
+        .await.expect("shit!");
+
+    // Check if the request was successful (HTTP status code 200 OK)
+    if response.status().is_success() {
+        println!("Message sent successfully!");
+        Ok(())
+    } else {
+        println!("Failed to send message. Status code: {}", response.status());
+        Err("fuck!".to_string())
+
+    }
+}
+
 #[tokio::main]
-async fn main() -> Result<(), Error> {
-    let config = aws_config::defaults(BehaviorVersion::latest())
-        .region(Region::from_static("ap-northeast-1"))
-        .load()
-        .await;
-
-    let client = Client::new(&config);
-
+async fn main() -> Result<(), String> {
     let result = join!(weather_msg(), stock_msg());
     let msg = result.0 + &result.1;
 
-    subscribe_and_publish(
-        &client,
-        "arn:aws:sns:ap-northeast-1:764123066160:garfield-bot-topic",
-        "+821071550868",
-        msg,
-    )
-    .await
+    send_message_to_slack("", &msg).await
 }

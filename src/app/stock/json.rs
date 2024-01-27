@@ -58,7 +58,7 @@ impl StockResult {
                 high: d.high.parse().unwrap(),
                 low: d.low.parse().unwrap(),
             }),
-            None => Err("No Stock Data for yesterday".to_string()),
+            None => Err("No stock data for yesterday".to_string()),
         }
     }
 }
