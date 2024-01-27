@@ -25,7 +25,7 @@ async fn stock_msg() -> String {
     let data = s_service.get_yesterday_stock_data().await;
     match data {
         Ok(p) => s_service.create_stock_msg(vec![p.0, p.1]),
-        Err(s) => "어제 장 데이터를 가져오지 못하였습니다.".to_string(),
+        Err(s) => s,
     }
 }
 async fn subscribe_and_publish(

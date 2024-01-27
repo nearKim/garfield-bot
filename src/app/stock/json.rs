@@ -51,14 +51,16 @@ impl StockResult {
         let key = key_string.as_str();
         let data = self
             .daily_data
-            .get(key)
-            .expect("No Stock Data for yesterday");
+            .get(key);
 
-        Ok(StockData {
-            ticker: ticker.to_string(),
-            close: data.close.parse().unwrap(),
-            high: data.high.parse().unwrap(),
-            low: data.low.parse().unwrap(),
-        })
+        match data {
+            Some(d) => Ok(StockData {
+                ticker: ticker.to_string(),
+                close: d.close.parse().unwrap(),
+                high: d.high.parse().unwrap(),
+                low: d.low.parse().unwrap(),
+            }),
+            None => Err("No Stock Data for yesterday".to_string())
+        }
     }
 }
