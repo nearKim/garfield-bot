@@ -49,9 +49,7 @@ impl StockResult {
             yesterday.day()
         );
         let key = key_string.as_str();
-        let data = self
-            .daily_data
-            .get(key);
+        let data = self.daily_data.get(key);
 
         match data {
             Some(d) => Ok(StockData {
@@ -60,7 +58,7 @@ impl StockResult {
                 high: d.high.parse().unwrap(),
                 low: d.low.parse().unwrap(),
             }),
-            None => Err("No Stock Data for yesterday".to_string())
+            None => Err("No Stock Data for yesterday".to_string()),
         }
     }
 }
